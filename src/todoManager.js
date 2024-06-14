@@ -1,8 +1,10 @@
-import { format } from 'date-fns';
+import { format, isToday } from 'date-fns';
 import { localList } from './storage.js';
 import { Todo } from './todoClass.js';
 
 let todoList = localList.getList('taskList') || [];
+
+
 
 export function createTodo(title, description, due, id, project) {
   const newTodo = new Todo(title, description, due, id, project);
@@ -28,7 +30,8 @@ export function addTodoProject(todoId, projectId) {
       todoList[todoIndex].project = projectId;
       localList.save('taskList', todoList);
     } 
-}
+};
 
-export let taskList = localList.getList('taskList');
+
+
 

@@ -1,26 +1,28 @@
 import { localList } from './storage';
-import { createTodo, deleteTodo } from './todoManager';
+import { appendChildren } from './displayFunctions';
+import { deleteTodo } from './todoManager';
+import { format, isToday } from 'date-fns';
 import { editTask } from './inputDisplay';
-import { format } from 'date-fns';
 
-export function appendChildren(parent, childrenArray) {
-  childrenArray.forEach(element => {
-    parent.appendChild(element);
-  });
-}
-
-export function displayTaskList() {
+export function displayTodayTaskList() {
   const main = document.querySelector('.main');
   main.innerHTML = '';
+
   const taskList = localList.getList('taskList') || [];
 
-  if (taskList.length < 1) {
-    main.textContent = 'No tasks'}
-    return 
+  const todayTasks = taskList.filter(task => isToday(new Date(task.due)));
+
+  if (todayTasks.length < 1) {
+    const noTask = document.createElement('p');
+    noTask.textContent = 'No task for today';
+    main.appendChild(noTask);
+    return;
+  }
 
   const listDiv = document.createElement('div');
   const taskUl = document.createElement('ul');
-  taskList.forEach(task => {
+
+  todayTasks.forEach(task => {
     const taskLi = document.createElement('li');
 
     const taskTitle = document.createElement('p');
@@ -33,7 +35,7 @@ export function displayTaskList() {
     taskDesc.textContent = task.description;
 
     const taskDue = document.createElement('p');
-    taskDue.textContent = format(new Date(task.due), 'dd-MM-yyyy')
+    taskDue.textContent = format(new Date(task.due), 'dd-MM-yyyy');
 
     const taskCheckBox = document.createElement('input');
     taskCheckBox.type = 'checkbox';
@@ -48,26 +50,23 @@ export function displayTaskList() {
       if (taskIndex !== -1) {
         taskList[taskIndex].status = task.status;
         localList.save('taskList', taskList);
-      };
+      }
     });
-    
+
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Edit';
     
     editBtn.addEventListener('click', () => {
-      editTask(task.id, displayTaskList);
-
-    });
-
-
-
+      editTask(task.id,
+      displayTodayTaskList)
+    })
 
     const taskDeleteBtn = document.createElement('button');
     taskDeleteBtn.textContent = 'Delete';
     taskDeleteBtn.classList.add('taskDeleteBtn');
     taskDeleteBtn.addEventListener('click', () => {
       deleteTodo(task.id);
-      displayTaskList();
+      displayTodayTaskList();
     });
 
     appendChildren(taskLi, [taskTitle, taskDesc, taskDue, taskCheckBox, editBtn, taskDeleteBtn]);
@@ -76,5 +75,4 @@ export function displayTaskList() {
 
   listDiv.appendChild(taskUl);
   main.appendChild(listDiv);
-}
-
+};
