@@ -32,6 +32,21 @@ export function inputSection() {
   dueInput.name = 'due';
   dueInput.required = true;
 
+  // priority logic
+  const inputPriority = document.createElement('select');
+  inputPriority.id = 'select';
+  inputPriority.name = 'select';
+    const option1 = document.createElement('option');
+      option1.value = 'High';
+      option1.textContent = 'High';
+    const option2 = document.createElement('option');
+      option2.value = 'Medium';
+      option2.textContent = 'Medium';
+    const option3 = document.createElement('option');
+      option3.value = 'Low';
+      option3.textContent = 'Low';
+  appendChildren(inputPriority, [option1, option2, option3]);
+
   const submitBtn = document.createElement('button');
   submitBtn.type = 'submit';
   submitBtn.textContent = 'Create Todo';
@@ -40,7 +55,7 @@ export function inputSection() {
   cancelBtn.type = 'button';
   cancelBtn.textContent = 'Cancel';
 
-  appendChildren(form, [titleInput, descriptionInput, dueInput, submitBtn, cancelBtn]);
+  appendChildren(form, [titleInput, descriptionInput, dueInput, inputPriority, submitBtn, cancelBtn]);
   modal.appendChild(form);
   backdrop.appendChild(modal);
   document.body.appendChild(backdrop);
@@ -50,7 +65,7 @@ export function inputSection() {
 
     const now = new Date();
     const idDate = format(now, 'MM/dd_HH:mm:ss');
-    createTodo(titleInput.value, descriptionInput.value, dueInput.value, `${idDate}T`);
+    createTodo(titleInput.value, descriptionInput.value, dueInput.value, `${idDate}T`, inputPriority.value);
 
     form.reset();
     backdrop.style.display = 'none';
@@ -59,7 +74,7 @@ export function inputSection() {
 
   cancelBtn.addEventListener('click', () => {
     form.reset();
-    backdrop.style.display = 'none';
+    document.body.removeChild(backdrop);
   });
 }
 
@@ -102,11 +117,32 @@ export function editTask( taskId, callback = () => {}) {
   dueInput.value = task.due;
   dueInput.required = true;
 
+  const priorityInput = document.createElement('select');
+  priorityInput.id = 'select';
+  priorityInput.name = 'select';
+
+    const placeholderOption = document.createElement('option');
+      placeholderOption.value = '';
+      placeholderOption.textContent = 'Select priority';
+      placeholderOption.selected = true;
+      placeholderOption.disabled = true;
+    const option1 = document.createElement('option');
+      option1.value = 'High';
+      option1.textContent = 'High';
+    const option2 = document.createElement('option');
+      option2.value = 'Medium';
+      option2.textContent = 'Medium';
+    const option3 = document.createElement('option');
+      option3.value = 'Low';
+      option3.textContent = 'Low';
+  appendChildren(priorityInput, [placeholderOption, option1, option2, option3]);
+  priorityInput.value = task.priority;
+  
   const saveBtn = document.createElement('button');
   saveBtn.type =  'submit';
-  saveBtn.textContent = 'Save';
+  saveBtn.textContent = 'Save Changes';
 
-  appendChildren(editForm, [titleInput, descriptionInput, dueInput, saveBtn]);
+  appendChildren(editForm, [titleInput, descriptionInput, dueInput, priorityInput, saveBtn]);
 
   modal.appendChild(editForm);
   backdrop.appendChild(modal);
@@ -117,6 +153,7 @@ export function editTask( taskId, callback = () => {}) {
     task.title = titleInput.value;
     task.description = descriptionInput.value;
     task.due = dueInput.value;
+    task.priority = priorityInput.value;
     localList.save('taskList', taskList);
     backdrop.style.display = 'none';
     callback()

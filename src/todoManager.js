@@ -6,8 +6,8 @@ let todoList = localList.getList('taskList') || [];
 
 
 
-export function createTodo(title, description, due, id, project) {
-  const newTodo = new Todo(title, description, due, id, project);
+export function createTodo(title, description, due, id, priority, project) {
+  const newTodo = new Todo(title, description, due, id, priority, project);
 
   todoList.push(newTodo);
 

@@ -1,5 +1,5 @@
 import { localList } from './storage';
-import { createTodo, deleteTodo } from './todoManager';
+import { deleteTodo } from './todoManager';
 import { editTask } from './inputDisplay';
 import { format } from 'date-fns';
 
@@ -15,8 +15,8 @@ export function displayTaskList() {
   const taskList = localList.getList('taskList') || [];
 
   if (taskList.length < 1) {
-    main.textContent = 'No tasks'}
-    return 
+    main.textContent = 'No tasks';
+    return }
 
   const listDiv = document.createElement('div');
   const taskUl = document.createElement('ul');
@@ -32,8 +32,11 @@ export function displayTaskList() {
     const taskDesc = document.createElement('p');
     taskDesc.textContent = task.description;
 
+    const taskPriority = document.createElement('p');
+    taskPriority.textContent = `Priority: ${task.priority};`
+
     const taskDue = document.createElement('p');
-    taskDue.textContent = format(new Date(task.due), 'dd-MM-yyyy')
+    taskDue.textContent = format(new Date(task.due), 'dd-MM-yyyy');
 
     const taskCheckBox = document.createElement('input');
     taskCheckBox.type = 'checkbox';
@@ -59,9 +62,6 @@ export function displayTaskList() {
 
     });
 
-
-
-
     const taskDeleteBtn = document.createElement('button');
     taskDeleteBtn.textContent = 'Delete';
     taskDeleteBtn.classList.add('taskDeleteBtn');
@@ -70,7 +70,7 @@ export function displayTaskList() {
       displayTaskList();
     });
 
-    appendChildren(taskLi, [taskTitle, taskDesc, taskDue, taskCheckBox, editBtn, taskDeleteBtn]);
+    appendChildren(taskLi, [taskTitle, taskDesc, taskDue, taskPriority, taskCheckBox, editBtn, taskDeleteBtn]);
     taskUl.appendChild(taskLi);
   });
 

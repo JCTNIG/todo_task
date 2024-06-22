@@ -37,6 +37,9 @@ export function displayThisWeekTasks() {
     const taskDue = document.createElement('p');
     taskDue.textContent = format(new Date(task.due), 'dd-MM-yyyy');
 
+    const taskPriority = document.createElement('p');
+    taskPriority.textContent = `Priority: ${task.priority}`;
+
     const taskCheckBox = document.createElement('input');
     taskCheckBox.type = 'checkbox';
     taskCheckBox.name = 'taskCheckBox';
@@ -69,7 +72,7 @@ export function displayThisWeekTasks() {
       displayThisWeekTasks()
     });
 
-    appendChildren(taskLi, [taskTitle, taskDesc, taskDue, taskCheckBox, editBtn, taskDeleteBtn]);
+    appendChildren(taskLi, [taskTitle, taskDesc, taskDue, taskPriority, taskCheckBox, editBtn, taskDeleteBtn]);
     taskUl.appendChild(taskLi);
   });
 
